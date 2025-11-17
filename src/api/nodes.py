@@ -9,8 +9,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from src.database.connection import get_db
-from src.database.models import Node, User
-from src.api.marketplace_models import NodeRegister, NodeUpdate, NodeResponse
+from src.database.models import Node, User, ResourceOffer
+from src.api.marketplace_models import NodeRegister, NodeUpdate, NodeResponse, ResourceOfferResponse
 from src.api.auth import get_current_user
 
 
@@ -197,3 +197,44 @@ async def delete_node(
 
     db.delete(node)
     db.commit()
+
+
+@router.get("/{node_id}/offers", response_model=List[ResourceOfferResponse])
+async def list_node_offers(
+    node_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    List all resource offers for a specific node.
+
+    Args:
+        node_id: Node ID
+        current_user: Authenticated user
+        db: Database session
+
+    Returns:
+        List of resource offers for the node
+
+    Raises:
+        HTTPException: If node not found or user not authorized
+    """
+    node = db.query(Node).filter(Node.id == node_id).first()
+
+    if not node:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Node not found"
+        )
+
+    # Check ownership
+    if node.owner_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to access this node's offers"
+        )
+
+    # Get all offers for this node
+    offers = db.query(ResourceOffer).filter(ResourceOffer.node_id == node_id).all()
+
+    return [ResourceOfferResponse.model_validate(offer) for offer in offers]

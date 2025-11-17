@@ -11,7 +11,7 @@ from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 # Import routers
-from src.api import auth, nodes
+from src.api import auth, nodes, offers
 
 # Create FastAPI app
 app = FastAPI(
@@ -78,6 +78,7 @@ async def general_exception_handler(request: Request, exc: Exception):
 # Include routers
 app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
 app.include_router(nodes.router, prefix="/nodes", tags=["Nodes"])
+app.include_router(offers.router, prefix="/offers", tags=["Resource Offers"])
 
 
 @app.get("/health")
