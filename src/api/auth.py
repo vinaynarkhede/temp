@@ -3,7 +3,8 @@ Authentication endpoints for user registration and login.
 """
 
 import logging
-from fastapi import APIRouter, Depends, HTTPException, status
+from typing import Optional
+from fastapi import APIRouter, Depends, HTTPException, status, Header
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
@@ -161,4 +162,75 @@ async def login_user(
         api_key=user.api_key,
         credit_balance=user.credit_balance,
         created_at=user.created_at
+    )
+
+
+async def get_current_user(
+    x_api_key: Optional[str] = Header(None),
+    db: Session = Depends(get_db)
+) -> User:
+    """
+    FastAPI dependency for API key authentication.
+
+    Validates the X-API-Key header and returns the authenticated user.
+    Use this dependency on endpoints that require authentication.
+
+    Args:
+        x_api_key: API key from X-API-Key header
+        db: Database session (injected)
+
+    Returns:
+        User: Authenticated user object
+
+    Raises:
+        HTTPException 401: If API key is missing or invalid
+
+    Usage:
+        @router.get("/protected")
+        async def protected_endpoint(current_user: User = Depends(get_current_user)):
+            return {"message": f"Hello {current_user.username}"}
+    """
+    # Check if API key is provided
+    if not x_api_key:
+        logger.warning("Authentication failed: Missing API key")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Missing API key. Please provide X-API-Key header."
+        )
+
+    # Query user by API key
+    user = db.query(User).filter(User.api_key == x_api_key).first()
+
+    # Check if user exists
+    if not user:
+        logger.warning(f"Authentication failed: Invalid API key")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid API key"
+        )
+
+    logger.debug(f"User authenticated: {user.username} (ID: {user.id})")
+    return user
+
+
+@router.get("/me", response_model=UserResponse)
+async def get_current_user_info(current_user: User = Depends(get_current_user)):
+    """
+    Get current authenticated user's information.
+
+    Requires valid API key in X-API-Key header.
+
+    Args:
+        current_user: Authenticated user (injected by dependency)
+
+    Returns:
+        UserResponse: Current user's data
+    """
+    return UserResponse(
+        id=current_user.id,
+        username=current_user.username,
+        email=current_user.email,
+        api_key=current_user.api_key,
+        credit_balance=current_user.credit_balance,
+        created_at=current_user.created_at
     )

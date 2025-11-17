@@ -19,12 +19,12 @@
 
 | Phase | Tasks | Completed | Percentage |
 |-------|-------|-----------|------------|
-| Phase 1: Foundation | 15 | 11 | 73% |
+| Phase 1: Foundation | 15 | 12 | 80% |
 | Phase 2: Core Marketplace | 12 | 0 | 0% |
 | Phase 3: Distribution & Scheduling | 10 | 0 | 0% |
 | Phase 4: Fault Tolerance | 8 | 0 | 0% |
 | Phase 5: Security & Polish | 10 | 0 | 0% |
-| **TOTAL** | **55** | **11** | **20%** |
+| **TOTAL** | **55** | **12** | **22%** |
 
 ---
 
@@ -249,7 +249,7 @@
     - [✓] 4 tests passing
   - **Notes**: Followed TDD - wrote 4 tests first. Password verification with bcrypt, returns existing API key (not new one). Clear error messages for invalid credentials
 
-- [ ] **Task 12: Implement API key authentication dependency**
+- [✓] **Task 12: Implement API key authentication dependency**
   - **Description**: FastAPI dependency for authenticating requests via API key
   - **Files to modify**: `src/api/auth.py`
   - **Tests**: `tests/test_api/test_auth.py`
@@ -259,12 +259,15 @@
     - Missing API key rejected (401)
     - Dependency injects User object
   - **Estimated Lines**: ~60
+  - **Actual Lines**: 72 (auth.py addition), 58 (tests)
   - **Duration**: 20 min
+  - **Completed**: 2025-11-17
   - **Success Criteria**:
-    - [ ] `get_current_user()` dependency function
-    - [ ] Checks X-API-Key header
-    - [ ] Queries user from database
-    - [ ] 4+ tests passing
+    - [✓] `get_current_user()` dependency function
+    - [✓] Checks X-API-Key header
+    - [✓] Queries user from database
+    - [✓] 4 tests passing
+  - **Notes**: Followed TDD - wrote 4 tests first. Created GET /auth/me endpoint to test dependency. Returns User object for use in protected endpoints. Clear error messages for missing/invalid API key
 
 ### 1.3 Basic API Setup
 

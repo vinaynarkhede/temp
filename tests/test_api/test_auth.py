@@ -232,3 +232,60 @@ class TestUserLogin:
 
         # Should return the SAME API key
         assert login_response.json()["api_key"] == original_api_key
+
+
+class TestAPIKeyAuthentication:
+    """Test suite for API key authentication dependency."""
+
+    def test_valid_api_key_allows_access(self, client, db_session):
+        """Test that valid API key allows access to protected endpoints."""
+        # Register user and get API key
+        reg_response = client.post("/auth/register", json={
+            "username": "alice",
+            "email": "alice@example.com",
+            "password": "SecurePassword123!"
+        })
+        api_key = reg_response.json()["api_key"]
+
+        # Access protected endpoint with valid API key
+        response = client.get("/auth/me", headers={"X-API-Key": api_key})
+
+        assert response.status_code == 200
+        data = response.json()
+        assert data["username"] == "alice"
+
+    def test_invalid_api_key_rejected(self, client, db_session):
+        """Test that invalid API key is rejected."""
+        response = client.get("/auth/me", headers={"X-API-Key": "invalid_key"})
+
+        assert response.status_code == 401
+        assert "api key" in response.json()["detail"].lower()
+
+    def test_missing_api_key_rejected(self, client, db_session):
+        """Test that missing API key is rejected."""
+        response = client.get("/auth/me")
+
+        assert response.status_code == 401
+        assert "api key" in response.json()["detail"].lower()
+
+    def test_dependency_injects_user_object(self, client, db_session):
+        """Test that dependency correctly injects User object."""
+        # Register user
+        reg_response = client.post("/auth/register", json={
+            "username": "alice",
+            "email": "alice@example.com",
+            "password": "SecurePassword123!"
+        })
+        api_key = reg_response.json()["api_key"]
+
+        # Access protected endpoint
+        response = client.get("/auth/me", headers={"X-API-Key": api_key})
+
+        assert response.status_code == 200
+        data = response.json()
+
+        # Should return full user data
+        assert "id" in data
+        assert "username" in data
+        assert "email" in data
+        assert "credit_balance" in data
