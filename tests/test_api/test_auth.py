@@ -157,3 +157,78 @@ class TestUserRegistration:
 
         assert response.status_code == 201
         assert response.json()["credit_balance"] == 100
+
+
+class TestUserLogin:
+    """Test suite for user login endpoint."""
+
+    def test_valid_login_succeeds(self, client, db_session):
+        """Test that valid credentials return API key."""
+        # First register a user
+        client.post("/auth/register", json={
+            "username": "alice",
+            "email": "alice@example.com",
+            "password": "SecurePassword123!"
+        })
+
+        # Then login
+        response = client.post("/auth/login", json={
+            "username": "alice",
+            "password": "SecurePassword123!"
+        })
+
+        assert response.status_code == 200
+        data = response.json()
+
+        # Should return user data with API key
+        assert "id" in data
+        assert data["username"] == "alice"
+        assert "api_key" in data
+        assert len(data["api_key"]) == 64
+
+    def test_login_with_incorrect_password_fails(self, client, db_session):
+        """Test that incorrect password is rejected."""
+        # Register user
+        client.post("/auth/register", json={
+            "username": "alice",
+            "email": "alice@example.com",
+            "password": "CorrectPassword123!"
+        })
+
+        # Try to login with wrong password
+        response = client.post("/auth/login", json={
+            "username": "alice",
+            "password": "WrongPassword456!"
+        })
+
+        assert response.status_code == 401
+        assert "credentials" in response.json()["detail"].lower()
+
+    def test_login_with_nonexistent_username_fails(self, client, db_session):
+        """Test that non-existent username is rejected."""
+        response = client.post("/auth/login", json={
+            "username": "nonexistent",
+            "password": "SomePassword123!"
+        })
+
+        assert response.status_code == 401
+        assert "credentials" in response.json()["detail"].lower()
+
+    def test_login_returns_same_api_key(self, client, db_session):
+        """Test that login returns the existing API key (not a new one)."""
+        # Register user
+        reg_response = client.post("/auth/register", json={
+            "username": "alice",
+            "email": "alice@example.com",
+            "password": "SecurePassword123!"
+        })
+        original_api_key = reg_response.json()["api_key"]
+
+        # Login
+        login_response = client.post("/auth/login", json={
+            "username": "alice",
+            "password": "SecurePassword123!"
+        })
+
+        # Should return the SAME API key
+        assert login_response.json()["api_key"] == original_api_key

@@ -7,10 +7,10 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
-from src.api.models import UserRegister, UserResponse
+from src.api.models import UserRegister, UserLogin, UserResponse
 from src.database.connection import get_db
 from src.database.models import User
-from src.utils.security import hash_password, generate_api_key
+from src.utils.security import hash_password, verify_password, generate_api_key
 
 # Setup logging
 logger = logging.getLogger(__name__)
@@ -108,3 +108,57 @@ async def register_user(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Internal error during registration"
             )
+
+
+@router.post("/login", response_model=UserResponse, status_code=status.HTTP_200_OK)
+async def login_user(
+    login_data: UserLogin,
+    db: Session = Depends(get_db)
+):
+    """
+    Login an existing user.
+
+    Authenticates user credentials and returns user data with API key.
+
+    Args:
+        login_data: User login credentials (username, password)
+        db: Database session (injected)
+
+    Returns:
+        UserResponse: User data with API key
+
+    Raises:
+        HTTPException 401: If credentials are invalid
+    """
+    logger.info(f"Login attempt for username: {login_data.username}")
+
+    # Query user by username
+    user = db.query(User).filter(User.username == login_data.username).first()
+
+    # Check if user exists
+    if not user:
+        logger.warning(f"Login failed: User '{login_data.username}' not found")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid credentials"
+        )
+
+    # Verify password
+    if not verify_password(login_data.password, user.password_hash):
+        logger.warning(f"Login failed: Invalid password for user '{login_data.username}'")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid credentials"
+        )
+
+    logger.info(f"User logged in successfully: {user.username} (ID: {user.id})")
+
+    # Return user data with API key
+    return UserResponse(
+        id=user.id,
+        username=user.username,
+        email=user.email,
+        api_key=user.api_key,
+        credit_balance=user.credit_balance,
+        created_at=user.created_at
+    )
