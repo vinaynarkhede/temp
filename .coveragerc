@@ -1,0 +1,73 @@
+[run]
+# Coverage.py configuration for Distributed Compute Marketplace
+
+# Source code to measure
+source = src
+
+# Omit files from coverage measurement
+omit =
+    # Test files
+    tests/*
+    # Virtual environment
+    venv/*
+    */venv/*
+    # System/stdlib
+    */site-packages/*
+    */dist-packages/*
+    # Scripts
+    scripts/*
+    # Init files (often just imports)
+    */__init__.py
+
+# Enable branch coverage (not just line coverage)
+branch = True
+
+# Parallel mode for multiprocessing (if needed)
+parallel = False
+
+[report]
+# Coverage report options
+
+# Precision for percentages
+precision = 2
+
+# Show missing lines
+show_missing = True
+
+# Skip covered files in report
+skip_covered = False
+
+# Skip empty files
+skip_empty = True
+
+# Exclude lines from coverage
+exclude_lines =
+    # Standard pragma
+    pragma: no cover
+    # Don't complain about missing debug code
+    def __repr__
+    # Don't complain if tests don't hit defensive assertion code
+    raise AssertionError
+    raise NotImplementedError
+    # Don't complain if non-runnable code isn't run
+    if __name__ == .__main__.:
+    # Type checking only imports
+    if TYPE_CHECKING:
+    # Abstract methods
+    @abstractmethod
+    # Protocols
+    @protocol
+    # Pass statements
+    pass
+
+# Fail under this percentage (85% as per CLAUDE.md)
+fail_under = 85.0
+
+[html]
+# HTML report options
+directory = htmlcov
+title = Distributed Compute Marketplace - Coverage Report
+
+[xml]
+# XML report options (for CI/CD)
+output = coverage.xml
