@@ -54,3 +54,5 @@ minio==7.2.0  # Object storage for results
 slowapi==0.1.9  # Rate limiting
 websockets==12.0  # Real-time monitoring
 python-multipart==0.0.6  # File uploads
+cryptography==41.0.7  # Encryption for data at rest
+click==8.1.7  # CLI tool framework
