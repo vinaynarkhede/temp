@@ -19,12 +19,12 @@
 
 | Phase | Tasks | Completed | Percentage |
 |-------|-------|-----------|------------|
-| Phase 1: Foundation | 15 | 1 | 7% |
+| Phase 1: Foundation | 15 | 2 | 13% |
 | Phase 2: Core Marketplace | 12 | 0 | 0% |
 | Phase 3: Distribution & Scheduling | 10 | 0 | 0% |
 | Phase 4: Fault Tolerance | 8 | 0 | 0% |
 | Phase 5: Security & Polish | 10 | 0 | 0% |
-| **TOTAL** | **55** | **1** | **2%** |
+| **TOTAL** | **55** | **2** | **4%** |
 
 ---
 
@@ -52,18 +52,21 @@
     - [✓] README has setup instructions
     - [✓] .gitignore excludes venv, __pycache__, .env
 
-- [ ] **Task 2: Setup database schema**
+- [✓] **Task 2: Setup database schema**
   - **Description**: Create SQL schema file with all 6 tables and indexes
   - **Files to create**: `src/database/schema.sql`
   - **Reference**: CLAUDE.md "DATABASE SCHEMA" section
   - **Tests**: Manual verification with psql
   - **Estimated Lines**: ~150
+  - **Actual Lines**: 241
   - **Duration**: 30 min
+  - **Completed**: 2025-11-17
   - **Success Criteria**:
-    - [ ] All 6 tables defined (users, nodes, resource_offers, jobs, job_chunks, credit_transactions)
-    - [ ] All indexes created
-    - [ ] Schema can be executed without errors
-    - [ ] Constraints and foreign keys properly defined
+    - [✓] All 6 tables defined (users, nodes, resource_offers, jobs, job_chunks, credit_transactions)
+    - [✓] All indexes created (22 total)
+    - [✓] Schema can be executed without errors
+    - [✓] Constraints and foreign keys properly defined
+  - **Notes**: Also added schema_version table for migrations, triggers for updated_at, and comprehensive comments
 
 - [ ] **Task 3: Setup Docker Compose for VPS services**
   - **Description**: Create docker-compose.yml with PostgreSQL and MinIO
