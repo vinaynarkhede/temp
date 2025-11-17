@@ -19,12 +19,12 @@
 
 | Phase | Tasks | Completed | Percentage |
 |-------|-------|-----------|------------|
-| Phase 1: Foundation | 15 | 4 | 27% |
+| Phase 1: Foundation | 15 | 5 | 33% |
 | Phase 2: Core Marketplace | 12 | 0 | 0% |
 | Phase 3: Distribution & Scheduling | 10 | 0 | 0% |
 | Phase 4: Fault Tolerance | 8 | 0 | 0% |
 | Phase 5: Security & Polish | 10 | 0 | 0% |
-| **TOTAL** | **55** | **4** | **7%** |
+| **TOTAL** | **55** | **5** | **9%** |
 
 ---
 
@@ -105,17 +105,20 @@
     - [✓] 10 tests passing, 1 skipped
   - **Notes**: Followed TDD - wrote 11 tests FIRST, then implemented. Includes FastAPI dependency injection support, singleton engine pattern, comprehensive logging
 
-- [ ] **Task 5: Create database initialization script**
+- [✓] **Task 5: Create database initialization script**
   - **Description**: Script to create database and run schema
   - **Files to create**: `scripts/init_db.py`
   - **Tests**: Manual - run script and verify tables exist
   - **Estimated Lines**: ~80
+  - **Actual Lines**: 348
   - **Duration**: 20 min
+  - **Completed**: 2025-11-17
   - **Success Criteria**:
-    - [ ] Script creates database if not exists
-    - [ ] Script runs schema.sql
-    - [ ] Script is idempotent (can run multiple times safely)
-    - [ ] Script prints success/error messages
+    - [✓] Script creates database if not exists
+    - [✓] Script runs schema.sql
+    - [✓] Script is idempotent (can run multiple times safely)
+    - [✓] Script prints success/error messages
+  - **Notes**: Includes database URL parsing, existence checking, table verification, comprehensive error handling with logging
 
 ### 1.2 Authentication System
 
