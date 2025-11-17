@@ -38,8 +38,12 @@ def calculate_job_cost(
         >>> calculate_job_cost(cpu_cores=4, ram_gb=8, estimated_duration_hours=2.0)
         96
     """
-    if cpu_cores < 0 or ram_gb < 0 or estimated_duration_hours < 0:
-        raise ValueError("All parameters must be non-negative")
+    if cpu_cores < 0:
+        raise ValueError("CPU cores must be positive")
+    if ram_gb < 0:
+        raise ValueError("RAM must be positive")
+    if estimated_duration_hours < 0:
+        raise ValueError("Duration must be non-negative")
 
     hourly_cost = (
         cpu_cores * CREDIT_WEIGHTS['cpu_core_per_hour'] +
