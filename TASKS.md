@@ -19,12 +19,12 @@
 
 | Phase | Tasks | Completed | Percentage |
 |-------|-------|-----------|------------|
-| Phase 1: Foundation | 15 | 8 | 53% |
+| Phase 1: Foundation | 15 | 9 | 60% |
 | Phase 2: Core Marketplace | 12 | 0 | 0% |
 | Phase 3: Distribution & Scheduling | 10 | 0 | 0% |
 | Phase 4: Fault Tolerance | 8 | 0 | 0% |
 | Phase 5: Security & Polish | 10 | 0 | 0% |
-| **TOTAL** | **55** | **8** | **15%** |
+| **TOTAL** | **55** | **9** | **16%** |
 
 ---
 
@@ -184,7 +184,7 @@
     - [✓] 4 tests passing
   - **Notes**: Implemented together with Task 7 in same module. All tests already passing
 
-- [ ] **Task 9: Create SQLAlchemy User model**
+- [✓] **Task 9: Create SQLAlchemy User model**
   - **Description**: Define User ORM model matching database schema
   - **Files to create**: `src/database/models.py`
   - **Reference**: https://docs.sqlalchemy.org/en/20/orm/
@@ -195,12 +195,15 @@
     - Unique constraints work (username, email, api_key)
     - Timestamps auto-populate
   - **Estimated Lines**: ~80
+  - **Actual Lines**: 84 (implementation), 119 (tests), 46 (conftest)
   - **Duration**: 25 min
+  - **Completed**: 2025-11-17
   - **Success Criteria**:
-    - [ ] User model with all fields
-    - [ ] Relationships defined (if any)
-    - [ ] __repr__ method for debugging
-    - [ ] 4+ tests passing
+    - [✓] User model with all fields
+    - [✓] Relationships defined (if any)
+    - [✓] __repr__ method for debugging
+    - [✓] 8 tests passing (exceeded 4+ requirement)
+  - **Notes**: Followed TDD - wrote 8 tests first. Created pytest conftest.py with db_session fixture. Uses SQLAlchemy 2.0 style. Includes to_dict() method for serialization
 
 - [ ] **Task 10: Implement user registration endpoint**
   - **Description**: POST /auth/register endpoint
