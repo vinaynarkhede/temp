@@ -48,3 +48,9 @@ slowapi==0.1.9
 
 # Logging
 loguru==0.7.2
+
+# Feature additions
+minio==7.2.0  # Object storage for results
+slowapi==0.1.9  # Rate limiting
+websockets==12.0  # Real-time monitoring
+python-multipart==0.0.6  # File uploads
